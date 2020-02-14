@@ -1,0 +1,40 @@
+name: "build-test"
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+    branches:
+      - master
+      - 'releases/*'
+jobs:
+  build: # make sure build/ci work properly
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - run: |
+        npm install
+        npm run all
+  test: # make sure the action works on a clean machine without building
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: ./
+      with:
+        token: ${{ secrets.NON_USELESS_GITHUB_TOKEN }}
+    - run: touch ./build/manifests/staging.json ./build/manifests/production.json
+    - uses: actions/upload-artifact@v1
+      with:
+        name: staging.json
+        path: ./build/manifests/staging.json
+    - uses: actions/upload-artifact@v1
+      with:
+        name: production.json
+        path: ./build/manifests/production.json
+    - uses: peachjar/action-s3-sync@master
+      with:
+        args: --acl public-read --follow-symlinks
+        aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET }}
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_region: 'us-east-1'
+        source_dir: './build/manifests'
+        dest_dir: 'mapp/manifests'

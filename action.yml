@@ -1,0 +1,13 @@
+name: 'Rebuild MAPP manifests'
+description: 'Rebuild MAPP manifests from git repo states'
+author: 'Peachjar Engineering'
+inputs:
+  outputDir:
+    description: Directory to dump new manifest files in
+    default: './build/manifests'
+  token:
+    description: Sheesh, why isn't this automatically provided?
+    required: true
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
