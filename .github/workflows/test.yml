@@ -32,9 +32,9 @@ jobs:
     - uses: peachjar/action-s3-sync@master
       with:
         args: --acl public-read --follow-symlinks
-        aws_s3_bucket: ${{ secrets.AWS_S3_BUCKET }}
+        aws_s3_bucket: peachjar-assets
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws_region: 'us-east-1'
         source_dir: './build/manifests'
-        dest_dir: 'mapp/manifests'
+        dest_dir: 'mapp/manifests-test'
