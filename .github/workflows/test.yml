@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v1
     - uses: ./
       with:
-        token: ${{ secrets.NON_USELESS_GITHUB_TOKEN }}
+        token: ${{ secrets.GITHUB_DEPLOY_TOKEN }}
     - run: touch ./build/manifests/staging.json ./build/manifests/production.json
     - uses: actions/upload-artifact@v1
       with:
