@@ -40597,6 +40597,8 @@ function getRepoStateFromRepoName(octo, repoName) {
                 per_page: 100,
             })
         ]);
+        console.log('branch request:');
+        console.log(stagingBranch);
         console.log('deploy_tags!');
         console.log(deployTags);
         const branches = lodash_1.compact([stagingBranch.data]).reduce((acc, val) => (Object.assign(Object.assign({}, acc), { [val.name]: val.commit.sha })), {});

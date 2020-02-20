@@ -51,6 +51,8 @@ async function getRepoStateFromRepoName(
       per_page: 100,
     })
   ])
+  console.log('branch request:')
+  console.log(stagingBranch)
 
   console.log('deploy_tags!')
   console.log(deployTags)
