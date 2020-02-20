@@ -25104,6 +25104,9 @@ function repoStateReducer(mset, repo) {
         .filter(t => t.match(DEPLOY_TAG_RE))
         .sort()
         .reverse()[0];
+    console.log('tags!');
+    console.log(repo.name);
+    console.log(repo.tags);
     const prodHash = repo.tags[prodDeployTag];
     const stagingHash = lodash_1.get(repo, `branches.${consts_1.STAGING_BRANCH}`);
     return Object.assign(Object.assign({}, mset), { staging: Object.assign(Object.assign({}, mset.staging), (stagingHash == null) ? null : { [repo.name]: stagingHash.slice(0, 7) }), production: Object.assign(Object.assign({}, mset.production), (prodHash == null) ? null : { [repo.name]: prodHash.slice(0, 7) }) });
@@ -40593,6 +40596,8 @@ function getRepoStateFromRepoName(octo, repoName) {
                 per_page: 100,
             })
         ]);
+        console.log('deploy_tags!');
+        console.log(deployTags);
         const branches = lodash_1.compact([stagingBranch.data]).reduce((acc, val) => (Object.assign(Object.assign({}, acc), { [val.name]: val.commit.sha })), {});
         const tags = deployTags.data.reduce((acc, val) => (Object.assign(Object.assign({}, acc), { [val.name]: val.commit.sha })), {});
         return {

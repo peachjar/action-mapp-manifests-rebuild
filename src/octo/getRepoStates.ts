@@ -51,6 +51,9 @@ async function getRepoStateFromRepoName(
     })
   ])
 
+  console.log('deploy_tags!')
+  console.log(deployTags)
+
   const branches = compact([stagingBranch.data]).reduce((acc, val) => ({
     ...acc,
     [val.name]: val.commit.sha,
