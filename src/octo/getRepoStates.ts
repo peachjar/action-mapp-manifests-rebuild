@@ -33,6 +33,7 @@ async function getRepoStateFromRepoName(
   octo: github.GitHub,
   repoName: string,
 ): Promise<RepoState> {
+  console.log(`requesting ${repoName} ${STAGING_BRANCH} branch`)
 
   const [ stagingBranch, deployTags ] = await Promise.all([
     // If 404, the staging branch will be ignored

@@ -40582,6 +40582,7 @@ function safetyPromise(p) {
 }
 function getRepoStateFromRepoName(octo, repoName) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log(`requesting ${repoName} ${consts_1.STAGING_BRANCH} branch`);
         const [stagingBranch, deployTags] = yield Promise.all([
             // If 404, the staging branch will be ignored
             safetyPromise(octo.repos.getBranch({
