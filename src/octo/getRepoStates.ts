@@ -18,8 +18,8 @@ function safetyPromise<T>(
         )
       } catch (e) {
         // @ts-ignore (lodash is inaccurately typed) :(
-        if (get(e, 'data.status' == 404)) {
-          // If this was rejected for a 404 specifically, resolve undefined
+        if (get(e, 'data.status') === 404 || get(e, 'status') === 404) {
+          // If this was rejected for a 404 specifically, resolve empty
           res(undefined)
           return
         } else {
@@ -33,8 +33,6 @@ async function getRepoStateFromRepoName(
   octo: github.GitHub,
   repoName: string,
 ): Promise<RepoState> {
-  console.log(`requesting ${repoName} ${STAGING_BRANCH} branch`)
-
   const [ stagingBranch, deployTags ] = await Promise.all([
     // If 404, the staging branch will be ignored
     safetyPromise(
@@ -51,16 +49,10 @@ async function getRepoStateFromRepoName(
       per_page: 100,
     })
   ])
-  console.log('branch request:')
-  console.log(stagingBranch)
 
-  console.log('deploy_tags!')
-  console.log(deployTags)
-
-  const branches = compact([stagingBranch.data]).reduce((acc, val) => ({
-    ...acc,
-    [val.name]: val.commit.sha,
-  }), {})
+  const branches: Record<string, string> = stagingBranch == null ?
+    {} :
+    { [STAGING_BRANCH]: get(stagingBranch, 'data.commit.sha') }
 
   const tags = deployTags.data.reduce((acc, val) => ({
     ...acc,

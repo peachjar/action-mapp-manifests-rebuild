@@ -11,9 +11,6 @@ export default function repoStateReducer(mset: ManifestSet, repo: RepoState): Ma
     .filter(t => t.match(DEPLOY_TAG_RE))
     .sort()
     .reverse()[0]
-  console.log('tags!')
-  console.log(repo.name)
-  console.log(repo.tags)
   const prodHash = repo.tags[prodDeployTag]
   const stagingHash = get(repo, `branches.${STAGING_BRANCH}`)
 

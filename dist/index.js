@@ -25104,9 +25104,6 @@ function repoStateReducer(mset, repo) {
         .filter(t => t.match(DEPLOY_TAG_RE))
         .sort()
         .reverse()[0];
-    console.log('tags!');
-    console.log(repo.name);
-    console.log(repo.tags);
     const prodHash = repo.tags[prodDeployTag];
     const stagingHash = lodash_1.get(repo, `branches.${consts_1.STAGING_BRANCH}`);
     return Object.assign(Object.assign({}, mset), { staging: Object.assign(Object.assign({}, mset.staging), (stagingHash == null) ? null : { [repo.name]: stagingHash.slice(0, 7) }), production: Object.assign(Object.assign({}, mset.production), (prodHash == null) ? null : { [repo.name]: prodHash.slice(0, 7) }) });
@@ -40569,8 +40566,8 @@ function safetyPromise(p) {
         }
         catch (e) {
             // @ts-ignore (lodash is inaccurately typed) :(
-            if (lodash_1.get(e, 'data.status' == 404)) {
-                // If this was rejected for a 404 specifically, resolve undefined
+            if (lodash_1.get(e, 'data.status') === 404 || lodash_1.get(e, 'status') === 404) {
+                // If this was rejected for a 404 specifically, resolve empty
                 res(undefined);
                 return;
             }
@@ -40582,7 +40579,6 @@ function safetyPromise(p) {
 }
 function getRepoStateFromRepoName(octo, repoName) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(`requesting ${repoName} ${consts_1.STAGING_BRANCH} branch`);
         const [stagingBranch, deployTags] = yield Promise.all([
             // If 404, the staging branch will be ignored
             safetyPromise(octo.repos.getBranch({
@@ -40597,11 +40593,9 @@ function getRepoStateFromRepoName(octo, repoName) {
                 per_page: 100,
             })
         ]);
-        console.log('branch request:');
-        console.log(stagingBranch);
-        console.log('deploy_tags!');
-        console.log(deployTags);
-        const branches = lodash_1.compact([stagingBranch.data]).reduce((acc, val) => (Object.assign(Object.assign({}, acc), { [val.name]: val.commit.sha })), {});
+        const branches = stagingBranch == null ?
+            {} :
+            { [consts_1.STAGING_BRANCH]: lodash_1.get(stagingBranch, 'data.commit.sha') };
         const tags = deployTags.data.reduce((acc, val) => (Object.assign(Object.assign({}, acc), { [val.name]: val.commit.sha })), {});
         return {
             name: repoName,
